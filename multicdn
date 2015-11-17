@@ -1,0 +1,36 @@
+### usage
+# multicdn src_ASN multicdn START STOP
+#ASN=1221
+#START=2015-10-01
+#STOP=2015-11-01
+#MSM_ID=argv4
+
+if [ "$#" -ne 4 ]; then
+    echo "Usage: ./multicdn <ASN> <multicdn-name> <start> <stop>"
+    echo "  <ASN>: autonomous system number where ripe atlas sources are"
+    echo "  <multicdn>: either 'apple','microsoft','microsoft_v4','microsoft_v6'"
+    echo "  <start> <end>: in YYYY-MM-DD format"
+    exit
+fi
+
+ASN=$1
+MSM_ID=$2
+
+START=$3
+STOP=$4
+
+if   [ "$2" == "apple" ]; then
+   MSM_ID=1769099
+elif [ "$2" == "microsoft" ]; then
+   MSM_ID=2240465
+elif [ "$2" == "microsoft_v4" ]; then
+   MSM_ID=2240465
+elif [ "$2" == "microsoft_v6" ]; then
+   MSM_ID=2240487
+fi
+
+ATLAS_CMD=/Users/emile/work/envs/ripe-atlas-tools/bin/ripe-atlas
+
+PROBES=`$ATLAS_CMD probes --asn $ASN | perl -lane'push(@c,$F[0]) if ($F[0]=~/^\d+$/);END{print join(",",@c)}'`
+#echo "# PROBES: $PROBES"
+$ATLAS_CMD report --probes=$PROBES --renderer=dst_asn --start-time ${START}T00:00:00 --stop-time ${STOP}T23:59:59 $MSM_ID # | egrep '^{' | jq -c '[.timestamp, .dst_addr]'
