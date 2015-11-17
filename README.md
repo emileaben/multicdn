@@ -10,3 +10,5 @@ Usage:
 
 This uses ripe-atlas-tools, please install the latest version before trying to use this tool.
 For instructions please visit the github page at: https://github.com/RIPE-NCC/ripe-atlas-tools/
+
+This proof of concept received very little testing. YMMV.
